@@ -8,6 +8,16 @@ interface Animal {
   age: number;
 }
 
+const fetchAnimals = async (q: string): Promise<Animal[]> => {
+  const response = await fetch(
+    "http://localhost:8080?" + new URLSearchParams({ q })
+  );
+
+  const data: Animal[] = await response.json();
+
+  return data;
+};
+
 function useAnimalSearch() {
   const [animals, setAnimals] = useState<Animal[]>([]);
 
@@ -21,12 +31,8 @@ function useAnimalSearch() {
   }, []);
 
   const searchHandler = async (q: string) => {
-    const response = await fetch(
-      "http://localhost:8080?" + new URLSearchParams({ q })
-    );
-
-    const data: Animal[] = await response.json();
-    setAnimals(data);
+    const animals = await fetchAnimals(q);
+    setAnimals(animals);
 
     localStorage.setItem("lastQuery", q);
   };
