@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Animal from "./components/Animal";
 
 interface Animal {
@@ -11,6 +11,15 @@ interface Animal {
 function App() {
   const [animals, setAnimals] = useState<Animal[]>([]);
 
+  useEffect(() => {
+    const lastQuery = localStorage.getItem("lastQuery");
+    if (!lastQuery) {
+      return;
+    }
+
+    searchHandler(lastQuery);
+  }, []);
+
   const searchHandler = async (q: string) => {
     const response = await fetch(
       "http://localhost:8080?" + new URLSearchParams({ q })
@@ -18,6 +27,8 @@ function App() {
 
     const data: Animal[] = await response.json();
     setAnimals(data);
+
+    localStorage.setItem("lastQuery", q);
   };
 
   return (
