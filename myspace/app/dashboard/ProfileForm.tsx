@@ -20,8 +20,6 @@ export function ProfileForm({ user }: any) {
         "Content-Type": "application/json",
       },
     });
-
-    await res.json();
   };
 
   return (
